@@ -9,6 +9,9 @@
 
 class Brick
 {
+    static constexpr SDL_Color FILL_COLOR = { 200, 170, 170, SDL_ALPHA_OPAQUE };
+    static constexpr SDL_Color BORDER_COLOR = { 0, 0, 0, SDL_ALPHA_OPAQUE };
+
     const uint32_t inicial_hits_left;
     uint32_t hits_left;
     Rectangle rectangle;
@@ -34,9 +37,9 @@ public:
     void draw(SDL_Renderer* renderer) const
     {
         SDL_FRect rect = (SDL_FRect)rectangle;
-        SDL_SetRenderDrawColor(renderer, 200, 170, 170, 255);
+        SDL_SetRenderDrawColor(renderer, FILL_COLOR.r, FILL_COLOR.g, FILL_COLOR.b, FILL_COLOR.a);
         SDL_RenderFillRectF(renderer, &rect);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, BORDER_COLOR.r, BORDER_COLOR.g, BORDER_COLOR.b, BORDER_COLOR.a);
         SDL_RenderDrawRectF(renderer, &rect);
     }
 };

@@ -22,7 +22,7 @@ class BrickBreaker
 {
     Input input;
     Player player = Player(700/2.0, 650);
-    Ball ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1), 800);
+    Ball ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1));
 
     BrickGroupLayout bricks_layout;
     uint32_t bricks_left;

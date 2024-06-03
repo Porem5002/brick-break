@@ -57,7 +57,7 @@ void BrickBreaker::update()
             {
                 mode = BrickBreakerMode::START;
                 player = Player(700/2.0, 650);
-                ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1), 800);
+                ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1));
                 load_layout();
             }
             break;
