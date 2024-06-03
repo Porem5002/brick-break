@@ -11,8 +11,8 @@ class Player
     
     SDL_Color color = { 255, 255, 255, 255 };
     float speed = 500;
-    float width = 200;
-    float height = 50;
+    float width = 150;
+    float height = 20;
 public:
     Player(float x, float y) : position(Vector2(x, y)) { }
     

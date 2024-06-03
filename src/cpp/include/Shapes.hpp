@@ -101,7 +101,7 @@ struct Rectangle
         return cond_x && cond_y;
     }
 
-    explicit operator SDL_FRect()
+    explicit operator SDL_FRect() const
     {
         float x = position.x - width / 2;
         float y = position.y - height / 2;

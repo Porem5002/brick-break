@@ -9,7 +9,7 @@ class Ball
     Vector2 position;
     Vector2 move_direction;
     float speed = 100;
-    float side = 30;
+    float side = 20;
 public:
     Ball(Vector2 position, Vector2 move_direction, float speed) 
         : position(position), move_direction(move_direction), speed(speed) { }

@@ -7,7 +7,15 @@ int main(int argc, char** argv)
         .move_right_key = SDLK_d,
     };
 
-    BrickBreaker game = BrickBreaker(input_config); 
+    BrickGroupLayout bricks_layout = {
+        60,
+        60,
+        8,
+        4,
+        2
+    };
+
+    BrickBreaker game = BrickBreaker(input_config, bricks_layout); 
 
     while(game.is_running())
     {
