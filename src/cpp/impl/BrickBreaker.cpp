@@ -14,6 +14,8 @@ void BrickBreaker::update()
         return;
     }
 
+    bool hit_brick = false;
+
     switch(mode)
     {
         case BrickBreakerMode::START:
@@ -28,10 +30,11 @@ void BrickBreaker::update()
 
             for(Brick& b : bricks)
             {
-                if(!b.is_broken())
+                if(!hit_brick && !b.is_broken())
                 {
                     if(ball.get_rectangle().colliding_with(b.get_rectangle()))
                     {
+                        hit_brick = true;
                         b.hit();
 
                         if(b.is_broken()) bricks_left--;
@@ -56,8 +59,8 @@ void BrickBreaker::update()
             if(input.should_proceed())
             {
                 mode = BrickBreakerMode::START;
-                player = Player(700/2.0, 650);
-                ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1));
+                player = Player(WINDOW_WIDTH/2.0, 650);
+                ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
                 load_layout();
             }
             break;

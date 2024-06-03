@@ -20,9 +20,13 @@ enum BrickBreakerMode : uint32_t
 
 class BrickBreaker
 {
+    static constexpr const char* WINDOW_TITLE = "Brick Breaker CPP";
+    static constexpr int32_t WINDOW_WIDTH = 700;
+    static constexpr int32_t WINDOW_HEIGHT = 700;
+
     Input input;
-    Player player = Player(700/2.0, 650);
-    Ball ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1));
+    Player player = Player(WINDOW_WIDTH/2.0, 650);
+    Ball ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
 
     BrickGroupLayout bricks_layout;
     uint32_t bricks_left;
@@ -39,7 +43,7 @@ public:
         : bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
-        window = SDL_CreateWindow("Brick Breaker CPP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 700, 700, 0); 
+        window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0); 
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         prev_time = SDL_GetTicks64();
@@ -64,7 +68,7 @@ public:
 
     Rectangle get_screen_rect() const
     {
-        return Rectangle(700/2.0f, 700/2.0f, 700, 700);
+        return Rectangle(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     void load_layout()
