@@ -39,8 +39,8 @@ public:
         if(position.x > container.position.x + container.width/2 - WIDTH/2)
             position.x = container.position.x + container.width/2 - WIDTH/2;
 
-        if(position.x < container.position.x - container.width/2 + HEIGHT/2)
-            position.x = container.position.x - container.width/2 + HEIGHT/2;
+        if(position.x < container.position.x - container.width/2 + WIDTH/2)
+            position.x = container.position.x - container.width/2 + WIDTH/2;
     }
 
     void draw(SDL_Renderer* renderer) const
