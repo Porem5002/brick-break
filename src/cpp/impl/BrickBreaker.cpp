@@ -1,5 +1,72 @@
 #include "../include/BrickBreaker.hpp"
 
+BrickBreaker::BrickBreaker(BrickGroupLayout bricks_layout)
+    : bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+    window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0); 
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    prev_time = SDL_GetTicks64();
+
+    load_layout();
+}
+
+BrickBreaker::~BrickBreaker()
+{
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+bool BrickBreaker::is_running() const
+{
+    return running;
+}
+
+Rectangle BrickBreaker::get_screen_rect() const
+{
+    return Rectangle(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
+}
+
+void BrickBreaker::draw() const
+{
+    SDL_SetRenderDrawColor(renderer, 25, 25, 50, 255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    player.draw(renderer);
+
+    for(const Brick& b : bricks)
+    {
+        if(!b.is_broken())
+            b.draw(renderer);
+    }
+
+    ball.draw(renderer);
+
+    if(mode != BrickBreakerMode::PLAYING)
+    {
+        SDL_FRect rect = (SDL_FRect)get_screen_rect();
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 60); 
+        SDL_RenderFillRectF(renderer, &rect);
+    }
+
+    SDL_RenderPresent(renderer);
+    SDL_Delay(15);
+}
+
+void BrickBreaker::load_layout()
+{
+    Rectangle rect = get_screen_rect();
+    rect.height *= 0.4;
+
+    bricks_left = bricks_layout.get_brick_count();
+
+    bricks.clear();
+    bricks_layout.generate_bricks_into(rect, bricks);
+}
+
 void BrickBreaker::update()
 {
     Uint64 curr_time = SDL_GetTicks();
@@ -67,31 +134,4 @@ void BrickBreaker::update()
     }
 
     input.clear();
-}
-
-void BrickBreaker::draw() const
-{
-    SDL_SetRenderDrawColor(renderer, 25, 25, 50, 255);
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-
-    player.draw(renderer);
-
-    for(const Brick& b : bricks)
-    {
-        if(!b.is_broken())
-            b.draw(renderer);
-    }
-
-    ball.draw(renderer);
-
-    if(mode != BrickBreakerMode::PLAYING)
-    {
-        SDL_FRect rect = (SDL_FRect)get_screen_rect();
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 60); 
-        SDL_RenderFillRectF(renderer, &rect);
-    }
-
-    SDL_RenderPresent(renderer);
-    SDL_Delay(15);
 }

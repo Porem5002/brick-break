@@ -1,5 +1,31 @@
 #include "../include/Ball.hpp"
 
+Ball::Ball(Vector2 position, Vector2 move_direction) 
+        : position(position), move_direction(move_direction) { }
+
+Rectangle Ball::get_rectangle() const
+{
+    return Rectangle(position, SIDE, SIDE);
+}
+
+void Ball::draw(SDL_Renderer* renderer) const
+{
+    SDL_FRect rect = (SDL_FRect)get_rectangle();
+    SDL_SetRenderDrawColor(renderer, COLOR.r, COLOR.g, COLOR.b, COLOR.a);
+    SDL_RenderFillRectF(renderer, &rect);
+}
+
+void Ball::move(float delta_time)
+{
+    position += move_direction * SPEED * delta_time;
+}
+
+void Ball::position_based_deflect_on_collision(Rectangle collider)
+{
+    if(get_rectangle().colliding_with(collider))
+        move_direction = (position - collider.position).normalized();
+}
+
 void Ball::keep_inside_and_deflect(Rectangle container)
 {
     if(position.x < container.position.x - container.width/2 + SIDE/2)

@@ -1,5 +1,27 @@
 #include "../include/Input.hpp"
 
+Input::Input() : proceed(false), move_left(false), move_right(false), quit(false) { }
+
+bool Input::should_proceed() const
+{
+    return proceed;
+}
+
+bool Input::should_move_left() const
+{
+    return move_left;
+}
+
+bool Input::should_move_right() const
+{
+    return move_right;
+}
+
+bool Input::should_quit() const
+{
+    return quit;
+}
+
 void Input::update()
 {
     SDL_Event event;
@@ -34,4 +56,9 @@ void Input::update()
                 break;
         }
     }
+}
+
+void Input::clear()
+{
+    proceed = false;
 }

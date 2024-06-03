@@ -39,46 +39,13 @@ class BrickBreaker
     Uint64 prev_time;
     bool running;
 public:
-    BrickBreaker(BrickGroupLayout bricks_layout)
-        : bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
-    {
-        SDL_Init(SDL_INIT_EVERYTHING);
-        window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0); 
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    BrickBreaker(BrickGroupLayout bricks_layout);
+    ~BrickBreaker();
 
-        prev_time = SDL_GetTicks64();
-
-        load_layout();
-    }
-
-    ~BrickBreaker()
-    {
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-    }
-
-    void update();
+    bool is_running() const;
+    Rectangle get_screen_rect() const;
     void draw() const;
 
-    bool is_running() const
-    {
-        return running;
-    }
-
-    Rectangle get_screen_rect() const
-    {
-        return Rectangle(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f, WINDOW_WIDTH, WINDOW_HEIGHT);
-    }
-
-    void load_layout()
-    {
-        Rectangle rect = get_screen_rect();
-        rect.height *= 0.4;
-
-        bricks_left = bricks_layout.get_brick_count();
-
-        bricks.clear();
-        bricks_layout.generate_bricks_into(rect, bricks);
-    }
+    void load_layout();
+    void update();
 };

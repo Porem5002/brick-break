@@ -14,39 +14,11 @@ class Player
 
     Vector2 position;
 public:
-    Player(float x, float y) : position(Vector2(x, y)) { }
+    Player(float x, float y);
     
-    Rectangle get_rectangle() const
-    {
-        return Rectangle(position, WIDTH, HEIGHT);
-    }
+    Rectangle get_rectangle() const;
+    void draw(SDL_Renderer* renderer) const;
 
-    void move(const Input& input, float delta_time)
-    {
-        float x_direction = 0;
-
-        if(input.should_move_left())
-            x_direction--;
-        
-        if(input.should_move_right())
-            x_direction++;
-
-        position.x += x_direction * SPEED * delta_time;
-    }
-
-    void keep_inside_x(Rectangle container)
-    {
-        if(position.x > container.position.x + container.width/2 - WIDTH/2)
-            position.x = container.position.x + container.width/2 - WIDTH/2;
-
-        if(position.x < container.position.x - container.width/2 + WIDTH/2)
-            position.x = container.position.x - container.width/2 + WIDTH/2;
-    }
-
-    void draw(SDL_Renderer* renderer) const
-    {
-        SDL_FRect rect = (SDL_FRect)get_rectangle();
-        SDL_SetRenderDrawColor(renderer, COLOR.r, COLOR.g, COLOR.b, COLOR.a);
-        SDL_RenderFillRectF(renderer, &rect);
-    }
+    void move(const Input& input, float delta_time);
+    void keep_inside_x(Rectangle container);
 };

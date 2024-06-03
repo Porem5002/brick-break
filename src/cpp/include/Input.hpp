@@ -13,32 +13,13 @@ struct Input
     bool move_right;
     bool quit;
 public:
-    Input() : proceed(false), move_left(false), move_right(false), quit(false) { }
-    
+    Input();
+
+    bool should_proceed() const;
+    bool should_move_left() const;
+    bool should_move_right() const;
+    bool should_quit() const;
+
     void update();
-
-    void clear()
-    {
-        proceed = false;
-    }
-
-    bool should_proceed() const
-    {
-        return proceed;
-    }
-
-    bool should_move_left() const
-    {
-        return move_left;
-    }
-
-    bool should_move_right() const
-    {
-        return move_right;
-    }
-
-    bool should_quit() const
-    {
-        return quit;
-    }
+    void clear();
 };
