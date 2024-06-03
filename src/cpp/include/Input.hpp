@@ -2,24 +2,18 @@
 
 #include <SDL2/SDL.h>
 
-struct InputConfig
-{
-    SDL_KeyCode proceeed_key;
-    SDL_KeyCode move_left_key;
-    SDL_KeyCode move_right_key;
-};
-
 struct Input
 {
-    InputConfig config;
+    static constexpr SDL_Keycode PROCEED_KEY = SDLK_SPACE;
+    static constexpr SDL_Keycode MOVE_LEFT_KEY = SDLK_a;
+    static constexpr SDL_Keycode MOVE_RIGHT_KEY = SDLK_d; 
 
     bool proceed;
     bool move_left;
     bool move_right;
     bool quit;
 public:
-    explicit Input(InputConfig config)
-        : config(config), proceed(false), move_left(false), move_right(false), quit(false) { }
+    Input() : proceed(false), move_left(false), move_right(false), quit(false) { }
     
     void update();
 

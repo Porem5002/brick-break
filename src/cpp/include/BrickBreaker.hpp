@@ -35,8 +35,8 @@ class BrickBreaker
     Uint64 prev_time;
     bool running;
 public:
-    BrickBreaker(InputConfig input_config, BrickGroupLayout bricks_layout)
-        : input(input_config), bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
+    BrickBreaker(BrickGroupLayout bricks_layout)
+        : bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
         window = SDL_CreateWindow("Brick Breaker CPP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 700, 700, 0); 

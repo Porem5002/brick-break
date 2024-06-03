@@ -12,21 +12,21 @@ void Input::update()
                 quit = true;
                 break;
             case SDL_KEYDOWN:
-                if(event.key.keysym.sym == config.proceeed_key)
+                if(event.key.keysym.sym == PROCEED_KEY)
                     proceed = true;
 
-                if(event.key.keysym.sym == config.move_left_key)
+                if(event.key.keysym.sym == MOVE_LEFT_KEY)
                     move_left = true;
                 
-                if(event.key.keysym.sym == config.move_right_key)
+                if(event.key.keysym.sym == MOVE_RIGHT_KEY)
                     move_right = true;
 
                 break;
             case SDL_KEYUP:
-                if(event.key.keysym.sym == config.move_left_key)
+                if(event.key.keysym.sym == MOVE_LEFT_KEY)
                     move_left = false;
                 
-                if(event.key.keysym.sym == config.move_right_key)
+                if(event.key.keysym.sym == MOVE_RIGHT_KEY)
                     move_right = false;
 
                 break;
