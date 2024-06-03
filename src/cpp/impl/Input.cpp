@@ -12,6 +12,8 @@ void Input::update()
                 quit = true;
                 break;
             case SDL_KEYDOWN:
+                if(event.key.keysym.sym == config.proceeed_key)
+                    proceed = true;
 
                 if(event.key.keysym.sym == config.move_left_key)
                     move_left = true;
@@ -21,7 +23,6 @@ void Input::update()
 
                 break;
             case SDL_KEYUP:
-
                 if(event.key.keysym.sym == config.move_left_key)
                     move_left = false;
                 

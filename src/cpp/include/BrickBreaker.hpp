@@ -11,11 +11,18 @@
 #include "Ball.hpp"
 #include "Bricks.hpp"
 
+enum BrickBreakerMode : uint32_t
+{
+    START,
+    PLAYING,
+    FINISHED,
+};
+
 class BrickBreaker
 {
     Input input;
     Player player = Player(700/2.0, 650);
-    Ball ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1), 700);
+    Ball ball = Ball(Vector2(700/2.0f, 400), Vector2(0, -1), 800);
 
     BrickGroupLayout bricks_layout;
     uint32_t bricks_left;
@@ -24,11 +31,12 @@ class BrickBreaker
     SDL_Window* window;
     SDL_Renderer* renderer;
     
+    BrickBreakerMode mode;
     Uint64 prev_time;
     bool running;
 public:
     BrickBreaker(InputConfig input_config, BrickGroupLayout bricks_layout)
-        : input(input_config), bricks_layout(bricks_layout), running(true)
+        : input(input_config), bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
         window = SDL_CreateWindow("Brick Breaker CPP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 700, 700, 0); 

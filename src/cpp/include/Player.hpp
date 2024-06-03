@@ -9,7 +9,7 @@ class Player
 {
     Vector2 position;
     
-    SDL_Color color = { 255, 255, 255, 255 };
+    SDL_Color color = { 200, 255, 120, 255 };
     float speed = 500;
     float width = 150;
     float height = 20;

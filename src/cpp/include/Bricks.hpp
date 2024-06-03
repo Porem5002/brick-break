@@ -34,7 +34,7 @@ public:
     void draw(SDL_Renderer* renderer) const
     {
         SDL_FRect rect = (SDL_FRect)rectangle;
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 200, 170, 170, 255);
         SDL_RenderFillRectF(renderer, &rect);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderDrawRectF(renderer, &rect);
