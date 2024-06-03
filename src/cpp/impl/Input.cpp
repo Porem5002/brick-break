@@ -1,6 +1,6 @@
 #include "../include/Input.hpp"
 
-InputData Input::get_updated_input()
+void Input::update()
 {
     SDL_Event event;
 
@@ -9,30 +9,28 @@ InputData Input::get_updated_input()
         switch(event.type)
         {
             case SDL_QUIT:
-                data.quit = true;
+                quit = true;
                 break;
             case SDL_KEYDOWN:
 
                 if(event.key.keysym.sym == config.move_left_key)
-                    data.move_left = true;
+                    move_left = true;
                 
                 if(event.key.keysym.sym == config.move_right_key)
-                    data.move_right = true;
+                    move_right = true;
 
                 break;
             case SDL_KEYUP:
 
                 if(event.key.keysym.sym == config.move_left_key)
-                    data.move_left = false;
+                    move_left = false;
                 
                 if(event.key.keysym.sym == config.move_right_key)
-                    data.move_right = false;
+                    move_right = false;
 
                 break;
             default:
                 break;
         }
     }
-
-    return data;
 }

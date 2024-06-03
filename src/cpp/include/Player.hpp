@@ -2,9 +2,10 @@
 
 #include <SDL2/SDL.h>
 
+#include "Input.hpp"
 #include "Shapes.hpp"
 
-struct Player
+class Player
 {
     Vector2 position;
     
@@ -12,9 +13,7 @@ struct Player
     float speed = 500;
     float width = 200;
     float height = 50;
-
-    float x_direction = 0;
-
+public:
     Player(float x, float y) : position(Vector2(x, y)) { }
     
     Rectangle get_rectangle() const
@@ -22,12 +21,20 @@ struct Player
         return Rectangle(position, width, height);
     }
 
-    void move(float delta_time)
+    void move(const Input& input, float delta_time)
     {
+        float x_direction = 0;
+
+        if(input.should_move_left())
+            x_direction--;
+        
+        if(input.should_move_right())
+            x_direction++;
+
         position.x += x_direction * speed * delta_time;
     }
 
-    void keep_inside_horizontal(Rectangle container)
+    void keep_inside_x(Rectangle container)
     {
         if(position.x > container.position.x + container.width/2 - width/2)
             position.x = container.position.x + container.width/2 - width/2;

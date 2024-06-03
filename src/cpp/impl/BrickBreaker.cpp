@@ -8,16 +8,16 @@ void BrickBreaker::update()
     float delta_time = (float)(curr_time - prev_time) / 1000;
     prev_time = curr_time;
 
-    InputData input_data = input.get_updated_input();
-    running = !input_data.quit;
+    input.update();
+    
+    if(input.should_quit())
+    {
+        running = false;
+        return;
+    }
 
-    player.x_direction = 0;
-
-    if(input_data.move_left) player.x_direction--;
-    if(input_data.move_right) player.x_direction++;
-
-    player.move(delta_time);
-    player.keep_inside_horizontal(get_screen_rect());
+    player.move(input, delta_time);
+    player.keep_inside_x(get_screen_rect());
 
     ball.move(delta_time);
     ball.keep_outside_and_deflect(obstacle_rect);

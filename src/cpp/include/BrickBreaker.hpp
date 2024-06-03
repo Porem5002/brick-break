@@ -21,7 +21,7 @@ private:
     Uint64 prev_time;
     bool running = true;
 public:
-    BrickBreaker(InputConfig input_config) : input(input_config)
+    explicit BrickBreaker(InputConfig input_config) : input(input_config)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
         window = SDL_CreateWindow("Brick Breaker CPP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 700, 700, 0); 

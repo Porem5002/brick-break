@@ -8,19 +8,30 @@ struct InputConfig
     SDL_KeyCode move_right_key;
 };
 
-struct InputData
-{
-    bool move_left = false;
-    bool move_right = false;
-    bool quit = false;
-};
-
 struct Input
 {
     InputConfig config;
-    InputData data;
-
+    bool move_left;
+    bool move_right;
+    bool quit;
 public:
-    Input(InputConfig config) : config(config) { }
-    InputData get_updated_input();
+    explicit Input(InputConfig config)
+        : config(config), move_left(false), move_right(false), quit(false) { }
+    
+    void update();
+
+    bool should_move_left() const
+    {
+        return move_left;
+    }
+
+    bool should_move_right() const
+    {
+        return move_right;
+    }
+
+    bool should_quit() const
+    {
+        return quit;
+    }
 };
