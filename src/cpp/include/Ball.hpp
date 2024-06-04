@@ -10,10 +10,14 @@ class Ball
     static constexpr float SIDE = 20;
     static constexpr float SPEED = 800;
 
+    static constexpr float DIR_INIT_X = 0;
+    static constexpr float DIR_INIT_Y = -1;
+
     Vector2 position;
     Vector2 move_direction;
 public:
-    Ball(Vector2 position, Vector2 move_direction);
+    Ball(float x, float y);
+    Ball(Vector2 position);
 
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;

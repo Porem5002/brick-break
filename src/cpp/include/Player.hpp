@@ -15,6 +15,7 @@ class Player
     Vector2 position;
 public:
     Player(float x, float y);
+    Player(Vector2 position);
     
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;

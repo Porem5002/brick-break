@@ -1,8 +1,11 @@
 #include "../include/CollisionSystem.hpp"
 #include "../include/Ball.hpp"
 
-Ball::Ball(Vector2 position, Vector2 move_direction) 
-        : position(position), move_direction(move_direction) { }
+Ball::Ball(float x, float y) 
+        : position(x, y), move_direction(DIR_INIT_X, DIR_INIT_Y) { }
+
+Ball::Ball(Vector2 position) 
+        : position(position), move_direction(DIR_INIT_X, DIR_INIT_Y) { }
 
 Rectangle Ball::get_rectangle() const
 {

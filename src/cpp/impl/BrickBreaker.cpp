@@ -2,7 +2,7 @@
 #include "../include/CollisionSystem.hpp"
 
 BrickBreaker::BrickBreaker(BrickGroupLayout bricks_layout)
-    : player(WINDOW_WIDTH/2.0, 650), ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1)),
+    : player(PLAYER_INIT_X, PLAYER_INIT_Y), ball(BALL_INIT_X, BALL_INIT_Y),
     bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -65,8 +65,8 @@ void BrickBreaker::load_layout()
     Rectangle rect = get_screen_rect();
     rect.height *= 0.4;
 
-    player = Player(WINDOW_WIDTH/2.0, 650);
-    ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
+    player = Player(PLAYER_INIT_X, PLAYER_INIT_Y);
+    ball = Ball(BALL_INIT_X, BALL_INIT_Y);
 
     bricks_left = bricks_layout.get_brick_count();
     

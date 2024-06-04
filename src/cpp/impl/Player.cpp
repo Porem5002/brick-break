@@ -1,6 +1,8 @@
 #include "../include/Player.hpp"
 
-Player::Player(float x, float y) : position(Vector2(x, y)) { }
+Player::Player(float x, float y) : position(x, y) { }
+
+Player::Player(Vector2 position) : position(position) { }
     
 Rectangle Player::get_rectangle() const
 {
