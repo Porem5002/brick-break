@@ -1,7 +1,9 @@
 #include "../include/BrickBreaker.hpp"
+#include "../include/CollisionSystem.hpp"
 
 BrickBreaker::BrickBreaker(BrickGroupLayout bricks_layout)
-    : bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
+    : player(WINDOW_WIDTH/2.0, 650), ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1)),
+    bricks_layout(bricks_layout), mode(BrickBreakerMode::START), running(true)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0); 
@@ -63,8 +65,11 @@ void BrickBreaker::load_layout()
     Rectangle rect = get_screen_rect();
     rect.height *= 0.4;
 
-    bricks_left = bricks_layout.get_brick_count();
+    player = Player(WINDOW_WIDTH/2.0, 650);
+    ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
 
+    bricks_left = bricks_layout.get_brick_count();
+    
     bricks.clear();
     bricks_layout.generate_bricks_into(rect, bricks);
 }
@@ -109,16 +114,16 @@ void BrickBreaker::update()
                         if(b.is_broken()) bricks_left--;
                     }
 
-                    ball.keep_outside_and_deflect(b.get_rectangle());
+                    ball.bounce_on_obstacle(b.get_rectangle());
                 }
             }
 
-            ball.position_based_deflect_on_collision(player.get_rectangle());
+            ball.bounce_on_paddle(player.get_rectangle());
 
             if(ball.get_rectangle().position.y + ball.get_rectangle().height/2 > get_screen_rect().position.x + get_screen_rect().height/2)
                 mode = BrickBreakerMode::FINISHED;
             
-            ball.keep_inside_and_deflect(get_screen_rect());
+            ball.bounce_inside_container(get_screen_rect());
 
             if(bricks_left == 0)
                 mode = BrickBreakerMode::FINISHED;
@@ -128,8 +133,6 @@ void BrickBreaker::update()
             if(input.should_proceed())
             {
                 mode = BrickBreakerMode::START;
-                player = Player(WINDOW_WIDTH/2.0, 650);
-                ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
                 load_layout();
             }
             break;

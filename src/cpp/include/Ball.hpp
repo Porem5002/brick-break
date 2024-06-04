@@ -19,7 +19,7 @@ public:
     void draw(SDL_Renderer* renderer) const;
 
     void move(float delta_time);
-    void position_based_deflect_on_collision(Rectangle collider);
-    void keep_inside_and_deflect(Rectangle container);
-    void keep_outside_and_deflect(Rectangle obstacle);
+    void bounce_on_paddle(Rectangle paddle);
+    void bounce_inside_container(Rectangle container);
+    void bounce_on_obstacle(Rectangle obstacle);
 };

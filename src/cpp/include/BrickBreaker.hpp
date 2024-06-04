@@ -26,8 +26,8 @@ class BrickBreaker
     static constexpr uint32_t TARGET_FPS = 120;
 
     Input input;
-    Player player = Player(WINDOW_WIDTH/2.0, 650);
-    Ball ball = Ball(Vector2(WINDOW_HEIGHT/2.0f, 400), Vector2(0, -1));
+    Player player;
+    Ball ball;
 
     BrickGroupLayout bricks_layout;
     uint32_t bricks_left;
