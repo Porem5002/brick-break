@@ -59,27 +59,50 @@ void Ball::keep_outside_and_deflect(Rectangle obstacle)
 
     Vector2 diff = (position - obstacle.position).normalized();
 
+    //MAYBE FIXME: This angle only works for detecting which side of the obstacle we hit
+    // because we are running with good FPS, if the delta time was considerably greater then
+    // the ball could move inside the obstacle, so the angle will not represent what we are after.
+    // But with a more precise calculation of the delta time and multiple updates per frame this should
+    // not be a problem (considering the current speed of the ball)
     float angle = diff.angle();
     float obs_angle = std::atan2(obstacle.height/2, obstacle.width/2);
 
     if(angle <= M_PI - obs_angle && angle >= obs_angle)
     {
-        position.y = obstacle.position.y + obstacle.height/2 + SIDE/2;
+        float new_y = obstacle.position.y + obstacle.height/2 + SIDE/2;
+        float dir_multiplier = move_direction.y == 0.0 ? 0.0 : (new_y - position.y) / -move_direction.y;
+
+        // Fixing the position since after the collision the ball could overlap with part of the obstacle
+        // An equivalent thing is done in the other ifs
+        position.y = new_y;
+        position.x += -move_direction.x * dir_multiplier;
         move_direction.y *= -1;
     }
     else if(angle <= -obs_angle && angle >= -M_PI + obs_angle)
     {
-        position.y = obstacle.position.y - obstacle.height/2 - SIDE/2;
+        float new_y = obstacle.position.y - obstacle.height/2 - SIDE/2;
+        float dir_multiplier = move_direction.y == 0.0 ? 0.0 : (new_y - position.y) / -move_direction.y;
+
+        position.y = new_y;
+        position.x += -move_direction.x * dir_multiplier;
         move_direction.y *= -1;
     }
     else if((angle <= obs_angle && angle >= 0) || (angle < 0 && angle >= -obs_angle))
     {
-        position.x = obstacle.position.x + obstacle.width/2 + SIDE/2;
+        float new_x = obstacle.position.x + obstacle.width/2 + SIDE/2;
+        float dir_multiplier = move_direction.x == 0.0 ? 0.0 : (new_x - position.x) / -move_direction.x;
+
+        position.x = new_x;
+        position.y += -move_direction.y * dir_multiplier;
         move_direction.x *= -1;
     }
     else
     {
-        position.x = obstacle.position.x - obstacle.width/2 - SIDE/2;
+        float new_x = obstacle.position.x - obstacle.width/2 - SIDE/2;
+        float dir_multiplier = move_direction.x == 0.0 ? 0.0 : (new_x - position.x) / -move_direction.x;
+
+        position.x = new_x;
+        position.y += -move_direction.y * dir_multiplier;
         move_direction.x *= -1;
     }
 }

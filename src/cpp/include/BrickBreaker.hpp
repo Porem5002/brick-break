@@ -23,6 +23,7 @@ class BrickBreaker
     static constexpr const char* WINDOW_TITLE = "Brick Breaker CPP";
     static constexpr int32_t WINDOW_WIDTH = 700;
     static constexpr int32_t WINDOW_HEIGHT = 700;
+    static constexpr uint32_t TARGET_FPS = 120;
 
     Input input;
     Player player = Player(WINDOW_WIDTH/2.0, 650);

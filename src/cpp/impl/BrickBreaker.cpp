@@ -53,7 +53,9 @@ void BrickBreaker::draw() const
     }
 
     SDL_RenderPresent(renderer);
-    SDL_Delay(15);
+
+    uint32_t target_frame_time_ms = (1000 / TARGET_FPS);
+    SDL_Delay(target_frame_time_ms);
 }
 
 void BrickBreaker::load_layout()
