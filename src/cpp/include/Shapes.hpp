@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <cmath>
 
 #include <SDL2/SDL.h>
@@ -9,6 +8,8 @@ struct Vector2
 {
     float x;
     float y;
+    
+    Vector2() : x(0), y(0) { }
 
     Vector2(float x, float y) : x(x), y(y) { }
 
@@ -109,3 +110,5 @@ struct Rectangle
         return rect;
     }
 };
+
+float SDL_FRect_swept(SDL_FRect m, SDL_FRect o, Vector2 v, Vector2& normal);

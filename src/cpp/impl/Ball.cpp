@@ -1,4 +1,3 @@
-#include "../include/CollisionSystem.hpp"
 #include "../include/Ball.hpp"
 
 Ball::Ball(float x, float y) 
@@ -24,13 +23,15 @@ void Ball::move(float delta_time)
     position += move_direction * SPEED * delta_time;
 }
 
-void Ball::bounce_on_paddle(Rectangle paddle)
+void Ball::bounce_on_paddle(Rectangle paddle, Vector2 movement)
 {
-    if(get_rectangle().colliding_with(paddle))
-    {
-        position = CollisionSystem::calc_collision_position(get_rectangle(), move_direction, paddle);
+    Vector2 normal;
+    float t = SDL_FRect_swept((SDL_FRect)get_rectangle(), (SDL_FRect)paddle, movement, normal);
+
+    position += movement * t;
+
+    if(abs(normal.x) > 0 || abs(normal.y) > 0)
         move_direction = (position - paddle.position).normalized();
-    }
 }
 
 void Ball::bounce_inside_container(Rectangle container)
@@ -58,19 +59,4 @@ void Ball::bounce_inside_container(Rectangle container)
         position.y = container.position.y + container.height/2 - SIDE/2;
         move_direction.y *= -1;
     }
-}
-
-void Ball::bounce_on_obstacle(Rectangle obstacle)
-{
-    std::optional<CollisionSide> o_collision_side = CollisionSystem::find_collision_side(get_rectangle(), move_direction, obstacle);
-    if(!o_collision_side.has_value()) return;
-
-    CollisionSide collision_side = o_collision_side.value();
-    Vector2 new_pos = CollisionSystem::calc_collision_position(get_rectangle(), move_direction, obstacle);
-    position = new_pos;
-
-    if(collision_side == CollisionSide::UP || collision_side == CollisionSide::DOWN)
-        move_direction.y *= -1;
-    else if(collision_side == CollisionSide::RIGHT || collision_side == CollisionSide::LEFT)
-        move_direction.x *= -1;
 }

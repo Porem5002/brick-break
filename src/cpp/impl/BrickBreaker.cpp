@@ -1,5 +1,6 @@
+#include <optional>
+
 #include "../include/BrickBreaker.hpp"
-#include "../include/CollisionSystem.hpp"
 
 BrickBreaker::BrickBreaker(BrickGroupLayout bricks_layout)
     : player(PLAYER_INIT_X, PLAYER_INIT_Y), ball(BALL_INIT_X, BALL_INIT_Y),
@@ -88,8 +89,6 @@ void BrickBreaker::update()
         return;
     }
 
-    bool hit_brick = false;
-
     switch(mode)
     {
         case BrickBreakerMode::START:
@@ -97,28 +96,45 @@ void BrickBreaker::update()
                 mode = BrickBreakerMode::PLAYING;
             break;
         case BrickBreakerMode::PLAYING:
+        {
             player.move(input, delta_time);
             player.keep_inside_x(get_screen_rect());
 
-            ball.move(delta_time);
+            Vector2 movement = ball.move_direction * ball.SPEED * delta_time;
+
+            float t = 1.0f;
+            Vector2 normal;
+            std::optional<Brick*> final_brick;
 
             for(Brick& b : bricks)
             {
-                if(!hit_brick && !b.is_broken())
+                if(!b.is_broken())
                 {
-                    if(ball.get_rectangle().colliding_with(b.get_rectangle()))
+                    Vector2 n;
+                    float curr_t = SDL_FRect_swept((SDL_FRect)ball.get_rectangle(), (SDL_FRect)b.get_rectangle(), movement, n);
+
+                    if(curr_t < t)
                     {
-                        hit_brick = true;
-                        b.hit();
-
-                        if(b.is_broken()) bricks_left--;
+                        normal = n;
+                        final_brick = &b;
+                        t = curr_t;
                     }
-
-                    ball.bounce_on_obstacle(b.get_rectangle());
                 }
             }
 
-            ball.bounce_on_paddle(player.get_rectangle());
+            if(abs(normal.x) > 0 || abs(normal.y) > 0)
+            {
+                ball.position += movement * t;
+
+                Brick& b = *final_brick.value();
+                b.hit();
+                if(b.is_broken()) bricks_left--;
+
+                if(abs(normal.x) > 0) ball.move_direction.x *= -1; 
+                if(abs(normal.y) > 0) ball.move_direction.y *= -1;
+            }
+            else
+                ball.bounce_on_paddle(player.get_rectangle(), movement);
 
             if(ball.get_rectangle().position.y + ball.get_rectangle().height/2 > get_screen_rect().position.x + get_screen_rect().height/2)
                 mode = BrickBreakerMode::FINISHED;
@@ -127,8 +143,9 @@ void BrickBreaker::update()
 
             if(bricks_left == 0)
                 mode = BrickBreakerMode::FINISHED;
-
+            
             break;
+        }
         case BrickBreakerMode::FINISHED:
             if(input.should_proceed())
             {
