@@ -29,9 +29,6 @@ void Ball::bounce_on_paddle(Rectangle paddle, Vector2 movement)
     float t = SDL_FRect_swept((SDL_FRect)get_rectangle(), (SDL_FRect)paddle, movement, normal);
 
     position += movement * t;
-
-    if(abs(normal.x) > 0 || abs(normal.y) > 0)
-        move_direction = (position - paddle.position).normalized();
 }
 
 void Ball::bounce_inside_container(Rectangle container)

@@ -1,12 +1,18 @@
 #include "../include/Player.hpp"
+#include "../include/Collisions.hpp"
 
-Player::Player(float x, float y) : position(x, y) { }
+Player::Player(float x, float y) : rectangle(x, y, WIDTH, HEIGHT) { }
 
-Player::Player(Vector2 position) : position(position) { }
+Player::Player(Vector2 position) : rectangle(position, WIDTH, HEIGHT) { }
+
+void Player::register_collider()
+{
+    Collisions::add_collider(ColliderTag::PADDLE, &rectangle, [](void*){ });
+}
     
 Rectangle Player::get_rectangle() const
 {
-    return Rectangle(position, WIDTH, HEIGHT);
+    return rectangle;
 }
 
 void Player::draw(SDL_Renderer* renderer) const
@@ -26,14 +32,14 @@ void Player::move(const Input& input, float delta_time)
     if(input.should_move_right())
         x_direction++;
 
-    position.x += x_direction * SPEED * delta_time;
+    rectangle.position.x += x_direction * SPEED * delta_time;
 }
 
 void Player::keep_inside_x(Rectangle container)
 {
-    if(position.x > container.position.x + container.width/2 - WIDTH/2)
-        position.x = container.position.x + container.width/2 - WIDTH/2;
+    if(rectangle.position.x > container.position.x + container.width/2 - WIDTH/2)
+        rectangle.position.x = container.position.x + container.width/2 - WIDTH/2;
 
-    if(position.x < container.position.x - container.width/2 + WIDTH/2)
-        position.x = container.position.x - container.width/2 + WIDTH/2;
+    if(rectangle.position.x < container.position.x - container.width/2 + WIDTH/2)
+        rectangle.position.x = container.position.x - container.width/2 + WIDTH/2;
 }

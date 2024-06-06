@@ -7,6 +7,7 @@
 
 #include "Shapes.hpp"
 #include "Closures.hpp"
+#include "Collisions.hpp"
 
 using BrickOnHitEvent = Closure<void(uint32_t)>;
 
@@ -17,16 +18,17 @@ class Brick
 
     uint32_t hits_left;
     Rectangle rectangle;
-    BrickOnHitEvent on_hit;
 
+    ColliderId id; 
+    BrickOnHitEvent on_hit;
 public:
     Brick(Rectangle rect, uint32_t hit_count, const BrickOnHitEvent& on_hit);
 
+    static void hit(Brick* b);
+    void register_collider();
     bool is_broken() const;
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;
-
-    void hit();
 };
 
 struct BrickGroupLayout

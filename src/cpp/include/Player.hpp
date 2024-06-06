@@ -12,11 +12,12 @@ class Player
     static constexpr float WIDTH = 150;
     static constexpr float HEIGHT = 20;
 
-    Vector2 position;
+    Rectangle rectangle;
 public:
     Player(float x, float y);
     Player(Vector2 position);
     
+    void register_collider();
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;
 

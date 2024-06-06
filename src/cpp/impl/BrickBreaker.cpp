@@ -1,6 +1,5 @@
-#include <optional>
-
 #include "../include/BrickBreaker.hpp"
+#include "../include/Collisions.hpp"
 
 BrickBreaker::BrickBreaker(BrickGroupLayout bricks_layout)
     : player(PLAYER_INIT_X, PLAYER_INIT_Y), ball(BALL_INIT_X, BALL_INIT_Y),
@@ -63,21 +62,23 @@ void BrickBreaker::draw() const
 
 void BrickBreaker::load_layout()
 {
+    Collisions::clear();
+
     Rectangle rect = get_screen_rect();
     rect.height *= 0.4;
 
     player = Player(PLAYER_INIT_X, PLAYER_INIT_Y);
+    player.register_collider();
+    
     ball = Ball(BALL_INIT_X, BALL_INIT_Y);
 
-    bricks_left = bricks_layout.get_brick_count();
-    
     BrickOnHitEvent on_hit(&bricks_left, [](uint32_t* bricks_left, uint32_t hits_left)
     {
         if(hits_left == 0) (*bricks_left)--;
     });
 
-    bricks.clear();
     bricks_layout.generate_bricks_into(rect, bricks, on_hit);
+    bricks_left = bricks_layout.get_brick_count();
 }
 
 void BrickBreaker::update()
@@ -107,38 +108,28 @@ void BrickBreaker::update()
 
             Vector2 movement = ball.move_direction * ball.SPEED * delta_time;
 
-            float t = 1.0f;
-            Vector2 normal;
-            std::optional<Brick*> final_brick;
+            auto o_info = Collisions::find_collision(ball.get_rectangle(), movement);
 
-            for(Brick& b : bricks)
+            if(!o_info.has_value())
+                ball.position += movement;
+            else
             {
-                if(!b.is_broken())
-                {
-                    Vector2 n;
-                    float curr_t = SDL_FRect_swept((SDL_FRect)ball.get_rectangle(), (SDL_FRect)b.get_rectangle(), movement, n);
+                auto info = o_info.value();
+                ball.position += movement * info.t;
 
-                    if(curr_t < t)
-                    {
-                        normal = n;
-                        final_brick = &b;
-                        t = curr_t;
-                    }
+                Collider c = Collisions::get_collider(info.id);
+
+                if(c.tag == ColliderTag::OBSTACLE)
+                {
+                    if(abs(info.normal.x) > 0) ball.move_direction.x *= -1; 
+                    if(abs(info.normal.y) > 0) ball.move_direction.y *= -1;
+                }
+                else if(c.tag == ColliderTag::PADDLE)
+                {
+                    if(abs(info.normal.x) > 0 || abs(info.normal.y) > 0)
+                        ball.move_direction = (ball.position - c.hitbox->position).normalized();
                 }
             }
-
-            if(abs(normal.x) > 0 || abs(normal.y) > 0)
-            {
-                ball.position += movement * t;
-
-                Brick& b = *final_brick.value();
-                b.hit();
-
-                if(abs(normal.x) > 0) ball.move_direction.x *= -1; 
-                if(abs(normal.y) > 0) ball.move_direction.y *= -1;
-            }
-            else
-                ball.bounce_on_paddle(player.get_rectangle(), movement);
 
             if(ball.get_rectangle().position.y + ball.get_rectangle().height/2 > get_screen_rect().position.x + get_screen_rect().height/2)
                 mode = BrickBreakerMode::FINISHED;
