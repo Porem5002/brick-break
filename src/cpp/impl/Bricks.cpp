@@ -1,7 +1,7 @@
 #include "../include/Bricks.hpp"
 
-Brick::Brick(Rectangle rect, int hit_count)
-        : inicial_hits_left(hit_count), hits_left(hit_count), rectangle(rect) { }
+Brick::Brick(Rectangle rect, uint32_t hit_count, const BrickOnHitEvent& on_hit)
+        : hits_left(hit_count), rectangle(rect), on_hit(on_hit) { }
 
 bool Brick::is_broken() const
 {
@@ -24,7 +24,11 @@ void Brick::draw(SDL_Renderer* renderer) const
 
 void Brick::hit()
 {
-    if(hits_left > 0) hits_left--;
+    if(!is_broken())
+    {
+        hits_left--;
+        on_hit(hits_left);
+    }
 }
 
 uint32_t BrickGroupLayout::get_brick_count() const
@@ -32,7 +36,7 @@ uint32_t BrickGroupLayout::get_brick_count() const
     return brick_count_horizontal * brick_count_vertical;
 }
 
-void BrickGroupLayout::generate_bricks_into(Rectangle container, std::vector<Brick>& bricks) const
+void BrickGroupLayout::generate_bricks_into(Rectangle container, std::vector<Brick>& bricks, const BrickOnHitEvent& on_hit) const
 {
     float width = (container.width - padding_horizontal*2) / brick_count_horizontal;
     float height = (container.height - padding_vertical*2) / brick_count_vertical;
@@ -45,7 +49,7 @@ void BrickGroupLayout::generate_bricks_into(Rectangle container, std::vector<Bri
         for(uint32_t x = 0; x < brick_count_horizontal; x++)
         {
             Rectangle rect = Rectangle(center, width, height);
-            bricks.emplace_back(rect, hits_to_break);
+            bricks.emplace_back(rect, hits_to_break, on_hit);
             center.x += width;
         }
 

@@ -6,17 +6,21 @@
 #include <SDL2/SDL.h>
 
 #include "Shapes.hpp"
+#include "Closures.hpp"
+
+using BrickOnHitEvent = Closure<void(uint32_t)>;
 
 class Brick
 {
     static constexpr SDL_Color FILL_COLOR = { 200, 170, 170, SDL_ALPHA_OPAQUE };
     static constexpr SDL_Color BORDER_COLOR = { 0, 0, 0, SDL_ALPHA_OPAQUE };
 
-    const uint32_t inicial_hits_left;
     uint32_t hits_left;
     Rectangle rectangle;
+    BrickOnHitEvent on_hit;
+
 public:
-    Brick(Rectangle rect, int hit_count);
+    Brick(Rectangle rect, uint32_t hit_count, const BrickOnHitEvent& on_hit);
 
     bool is_broken() const;
     Rectangle get_rectangle() const;
@@ -36,5 +40,5 @@ struct BrickGroupLayout
     uint32_t hits_to_break;
 
     uint32_t get_brick_count() const;
-    void generate_bricks_into(Rectangle container, std::vector<Brick>& bricks) const;
+    void generate_bricks_into(Rectangle container, std::vector<Brick>& bricks, const BrickOnHitEvent& on_hit) const;
 };

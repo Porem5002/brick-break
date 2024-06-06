@@ -71,8 +71,13 @@ void BrickBreaker::load_layout()
 
     bricks_left = bricks_layout.get_brick_count();
     
+    BrickOnHitEvent on_hit(&bricks_left, [](uint32_t* bricks_left, uint32_t hits_left)
+    {
+        if(hits_left == 0) (*bricks_left)--;
+    });
+
     bricks.clear();
-    bricks_layout.generate_bricks_into(rect, bricks);
+    bricks_layout.generate_bricks_into(rect, bricks, on_hit);
 }
 
 void BrickBreaker::update()
@@ -128,7 +133,6 @@ void BrickBreaker::update()
 
                 Brick& b = *final_brick.value();
                 b.hit();
-                if(b.is_broken()) bricks_left--;
 
                 if(abs(normal.x) > 0) ball.move_direction.x *= -1; 
                 if(abs(normal.y) > 0) ball.move_direction.y *= -1;
