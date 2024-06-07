@@ -7,7 +7,7 @@ Player::Player(Vector2 position) : rectangle(position, WIDTH, HEIGHT) { }
 
 void Player::register_collider()
 {
-    Collisions::add_collider(ColliderTag::PADDLE, &rectangle, [](void*){ });
+    Collisions::add_collider_ref(ColliderTag::PADDLE, &rectangle, [](void*){ });
 }
     
 Rectangle Player::get_rectangle() const
@@ -22,7 +22,7 @@ void Player::draw(SDL_Renderer* renderer) const
     SDL_RenderFillRectF(renderer, &rect);
 }
 
-void Player::move(const Input& input, float delta_time)
+void Player::update(const Input& input, float delta_time)
 {
     float x_direction = 0;
 
@@ -32,14 +32,10 @@ void Player::move(const Input& input, float delta_time)
     if(input.should_move_right())
         x_direction++;
 
-    rectangle.position.x += x_direction * SPEED * delta_time;
-}
+    float x_movement = x_direction * SPEED * delta_time;
+    Vector2 movement = Vector2(x_movement, 0);
 
-void Player::keep_inside_x(Rectangle container)
-{
-    if(rectangle.position.x > container.position.x + container.width/2 - WIDTH/2)
-        rectangle.position.x = container.position.x + container.width/2 - WIDTH/2;
-
-    if(rectangle.position.x < container.position.x - container.width/2 + WIDTH/2)
-        rectangle.position.x = container.position.x - container.width/2 + WIDTH/2;
+    auto o_info = Collisions::find_collision(get_rectangle(), movement, ColliderTag::OBSTACLE);
+    float t = o_info.has_value() ? o_info.value().t : 1.0f;
+    rectangle.position += movement * t;
 }

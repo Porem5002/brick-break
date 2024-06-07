@@ -56,4 +56,5 @@ public:
 
     void load_layout();
     void update();
+    void register_colliders();
 };

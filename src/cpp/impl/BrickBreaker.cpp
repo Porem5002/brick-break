@@ -68,17 +68,19 @@ void BrickBreaker::load_layout()
     rect.height *= 0.4;
 
     player = Player(PLAYER_INIT_X, PLAYER_INIT_Y);
-    player.register_collider();
-    
     ball = Ball(BALL_INIT_X, BALL_INIT_Y);
 
-    BrickOnHitEvent on_hit(&bricks_left, [](uint32_t* bricks_left, uint32_t hits_left)
+    BrickOnHitEvent on_hit(this, [](BrickBreaker* me, uint32_t hits_left)
     {
-        if(hits_left == 0) (*bricks_left)--;
+        if(hits_left == 0) me->bricks_left--;
+
+        if(me->bricks_left == 0) me->mode = BrickBreakerMode::FINISHED;
     });
 
     bricks_layout.generate_bricks_into(rect, bricks, on_hit);
     bricks_left = bricks_layout.get_brick_count();
+
+    register_colliders();
 }
 
 void BrickBreaker::update()
@@ -102,45 +104,9 @@ void BrickBreaker::update()
                 mode = BrickBreakerMode::PLAYING;
             break;
         case BrickBreakerMode::PLAYING:
-        {
-            player.move(input, delta_time);
-            player.keep_inside_x(get_screen_rect());
-
-            Vector2 movement = ball.move_direction * ball.SPEED * delta_time;
-
-            auto o_info = Collisions::find_collision(ball.get_rectangle(), movement);
-
-            if(!o_info.has_value())
-                ball.position += movement;
-            else
-            {
-                auto info = o_info.value();
-                ball.position += movement * info.t;
-
-                Collider c = Collisions::get_collider(info.id);
-
-                if(c.tag == ColliderTag::OBSTACLE)
-                {
-                    if(abs(info.normal.x) > 0) ball.move_direction.x *= -1; 
-                    if(abs(info.normal.y) > 0) ball.move_direction.y *= -1;
-                }
-                else if(c.tag == ColliderTag::PADDLE)
-                {
-                    if(abs(info.normal.x) > 0 || abs(info.normal.y) > 0)
-                        ball.move_direction = (ball.position - c.hitbox->position).normalized();
-                }
-            }
-
-            if(ball.get_rectangle().position.y + ball.get_rectangle().height/2 > get_screen_rect().position.x + get_screen_rect().height/2)
-                mode = BrickBreakerMode::FINISHED;
-            
-            ball.bounce_inside_container(get_screen_rect());
-
-            if(bricks_left == 0)
-                mode = BrickBreakerMode::FINISHED;
-            
+            player.update(input, delta_time);
+            ball.update(delta_time);
             break;
-        }
         case BrickBreakerMode::FINISHED:
             if(input.should_proceed())
             {
@@ -151,4 +117,32 @@ void BrickBreaker::update()
     }
 
     input.clear();
+}
+
+void BrickBreaker::register_colliders()
+{
+    Collisions::clear();
+    
+    player.register_collider();
+
+    for(auto& b : bricks) b.register_collider();
+
+    constexpr float BARRIER_THICKNESS = 0.1f;
+
+    Rectangle screen_rect = get_screen_rect();
+    
+    Vector2 right = screen_rect.position + Vector2(screen_rect.width/2 - BARRIER_THICKNESS/2, 0);
+    Vector2 left = screen_rect.position + Vector2(-screen_rect.width/2 + BARRIER_THICKNESS/2, 0);
+    Vector2 up = screen_rect.position + Vector2(0, -screen_rect.height/2 + BARRIER_THICKNESS/2);
+
+    Collisions::add_collider(ColliderTag::OBSTACLE, Rectangle(right, BARRIER_THICKNESS, screen_rect.height), [](void*){ });
+    Collisions::add_collider(ColliderTag::OBSTACLE, Rectangle(left, BARRIER_THICKNESS, screen_rect.height), [](void*){ });
+    Collisions::add_collider(ColliderTag::OBSTACLE, Rectangle(up, screen_rect.width, BARRIER_THICKNESS), [](void*){ });
+
+    ColliderOnHitEvent stop_game(&mode, [](BrickBreakerMode* mode) {
+        *mode = BrickBreakerMode::FINISHED;
+    });
+
+    Vector2 down = screen_rect.position + Vector2(0, screen_rect.height/2 - BARRIER_THICKNESS/2);
+    Collisions::add_collider(ColliderTag::OBSTACLE, Rectangle(down, screen_rect.width, BARRIER_THICKNESS), stop_game);
 }

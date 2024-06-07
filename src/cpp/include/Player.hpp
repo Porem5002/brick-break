@@ -21,6 +21,5 @@ public:
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;
 
-    void move(const Input& input, float delta_time);
-    void keep_inside_x(Rectangle container);
+    void update(const Input& input, float delta_time);
 };

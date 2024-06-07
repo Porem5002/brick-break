@@ -25,10 +25,12 @@ public:
     Brick(Rectangle rect, uint32_t hit_count, const BrickOnHitEvent& on_hit);
 
     static void hit(Brick* b);
-    void register_collider();
+    
     bool is_broken() const;
     Rectangle get_rectangle() const;
     void draw(SDL_Renderer* renderer) const;
+
+    void register_collider();
 };
 
 struct BrickGroupLayout

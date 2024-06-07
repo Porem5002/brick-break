@@ -7,7 +7,7 @@ Brick::Brick(Rectangle rect, uint32_t hit_count, const BrickOnHitEvent& on_hit)
 void Brick::register_collider()
 {
     ColliderOnHitEvent on_hit_collider(this, hit);
-    id = Collisions::add_collider(ColliderTag::OBSTACLE, &rectangle, on_hit_collider);
+    id = Collisions::add_collider(ColliderTag::OBSTACLE, rectangle, on_hit_collider);
 }
 
 void Brick::hit(Brick* b)
@@ -67,7 +67,4 @@ void BrickGroupLayout::generate_bricks_into(Rectangle container, std::vector<Bri
 
         center.y += height;
     }
-
-    for(auto& b : bricks)
-        b.register_collider();
 }
